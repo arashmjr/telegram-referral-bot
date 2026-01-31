@@ -1,6 +1,7 @@
 HOW TO RUN PROJECT
 
-Clone the project https://github.com/arashmjr/telegram-referral-bot.git
+Clone the project using this command:
+    git clone https://github.com/arashmjr/telegram-referral-bot.git
 
 create virtual env and activate it
     command: python -m venv venv
