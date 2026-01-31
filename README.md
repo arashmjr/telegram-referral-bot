@@ -16,6 +16,7 @@ install all requirements with command blew:
     pip install -r requirements.txt
 
 run this commands for migrations:
+
     python manage.py makemigrations
     python manage.py migrate
 
