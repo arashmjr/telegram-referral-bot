@@ -67,6 +67,7 @@ for run Price Alert using workers and celery beat:
 
 then: execute this commands in two seprate git bash terminal to bot check price Alert every five minute and send message to telegram channel with ID: @price_checker_channel
 
+
 command for run celery worker :
 
     celery -A core worker --loglevel=info --pool=solo
@@ -74,3 +75,8 @@ command for run celery worker :
 command for run celery beat:
 
     celery -A core beat --loglevel=info
+
+
+Bot Information:
+Bot Username: @referral_user_bot
+Channel: @price_checker_channel
