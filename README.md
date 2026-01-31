@@ -59,7 +59,7 @@ example:
 
     https://api.telegram.org/bot123456:ABCDEF/setWebhook?url=https://heavy-tires-throw.loca.lt/bot/webhook/
 
-===========================================================
+
 for run Price Alert using workers and celery beat: 
 
 - install Earlang OTP 26.0
