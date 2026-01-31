@@ -16,3 +16,7 @@ tests/report/
 .idea/
 *.sqlite3
 .env
+
+# Django migrations
+*/migrations/*.pyc
+*/migrations/__pycache__/

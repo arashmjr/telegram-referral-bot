@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from os import environ
 from pathlib import Path
-
+from dotenv import load_dotenv
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,7 +43,7 @@ SECRET_KEY = (
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -54,14 +55,39 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_crontab",
     "rest_framework",
-    "src.apps.accounts",
-    "src.apps.reminders",
-    "src.apps.storage",
+    "src.apps.bot.apps.BotConfig",
 ]
 
-AUTH_USER_MODEL = "accounts.User"
+# AUTH_USER_MODEL = "bot.TelegramUser"
+
+from celery.schedules import crontab
+from core.celery import app
+
+# app.conf.beat_schedule = {
+#     "check-price-every-5-minutes": {
+#         "task": "alerts.tasks.check_price",
+#         "schedule": 300.0,  # 300 ثانیه = 5 دقیقه
+#     }
+# }
+
+from datetime import timedelta
+CELERY_BEAT_SCHEDULE = {
+    'check-price-every-5-minutes': {
+        'task': 'src.apps.bot.tasks.check_price',
+        'schedule': timedelta(seconds=300),
+       
+    },
+}
+
+CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672/"  # RabbitMQ
+CELERY_RESULT_BACKEND = "rpc://"  # می‌تونه Redis هم باشه، ولی با RabbitMQ rpc راحت تره
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Tehran'
+
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -98,14 +124,21 @@ WSGI_APPLICATION = "core.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 # DATABASE CONFIGURATION
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": get_env("DEFAULT_DATABASE_NAME"),
+#         "USER": get_env("DEFAULT_DATABASE_USER"),
+#         "PASSWORD": get_env("DEFAULT_DATABASE_PASSWORD"),
+#         "HOST": get_env("DEFAULT_DATABASE_HOST"),
+#         "PORT": get_env("DEFAULT_DATABASE_PORT"),
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": get_env("DEFAULT_DATABASE_NAME"),
-        "USER": get_env("DEFAULT_DATABASE_USER"),
-        "PASSWORD": get_env("DEFAULT_DATABASE_PASSWORD"),
-        "HOST": get_env("DEFAULT_DATABASE_HOST"),
-        "PORT": get_env("DEFAULT_DATABASE_PORT"),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 # END DATABASE CONFIGURATION
@@ -159,3 +192,4 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
